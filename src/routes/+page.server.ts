@@ -1,10 +1,12 @@
+import { error } from "@sveltejs/kit"
 import type { PageServerLoad, Actions } from "./$types"
 import { getTodos, addTodo, deleteTodo } from "$lib/server/database"
 
 export const load: PageServerLoad = ({ cookies }) => {
-    const userId = cookies.get('userId')
+    let userId = cookies.get('userId')
     if (!userId) {
-        cookies.set('userId', crypto.randomUUID(), { path: '/' })
+        userId = crypto.randomUUID()
+        cookies.set('userId', userId, { path: '/' })
     }
 
     const todos = getTodos(userId)
@@ -12,16 +14,18 @@ export const load: PageServerLoad = ({ cookies }) => {
     return { todos }
 }
 
-
 export const actions: Actions = {
     create: async ({cookies, request}) => {
         console.log(request)
         const userId = cookies.get('userId')
+        if(!userId) { throw error(404, 'Not Found') }
         const data = await request.formData()
-        addTodo(userId, data.get('description'))
+        const description = data.get('description') as string
+        addTodo(userId, description)
     },
     delete: async ({cookies, request}) => {
         const userId = cookies.get('userId')
+        if(!userId) { throw error(404, 'Not Found') }
         const data = await request.formData()
         deleteTodo(userId, data.get('id'))
     }

@@ -1,6 +1,12 @@
+import { error } from "@sveltejs/kit";
 import { projects } from "../data"
+import { message } from "$lib/message"
 
-export function load({ params }) {
+type ProjectSlug = {
+    slug: string;
+}
+export function load({ params }: { params: ProjectSlug }) {
     const project = projects.find(project => project.slug === params.slug);
-    return { project };
+    if (!project) {throw error(404, 'Project not found');}
+    return { project, message };
 }

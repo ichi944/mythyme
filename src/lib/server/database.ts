@@ -7,7 +7,7 @@ type Todo = {
 }
 type Todos= Todo[];
 
-export function getTodos(userId: number): Todos {
+export function getTodos(userId: string): Todos {
     if(!db.get(userId)) {
         db.set(userId, [])
     }
@@ -15,7 +15,7 @@ export function getTodos(userId: number): Todos {
 }
 
 export function addTodo(
-    userId: number,
+    userId: string,
     description: string,
 ): Todo {
     const todos = getTodos(userId)
@@ -28,7 +28,7 @@ export function addTodo(
     return todo
 }
 export function toggleTodo(
-    userId: number,
+    userId: string,
     todoId: string,
 ): void {
     const todos = getTodos(userId)
@@ -39,7 +39,7 @@ export function toggleTodo(
 }
 
 export function updateTodo(
-    userId: number,
+    userId: string,
     todoId: string,
     description: string,
 ): void {
@@ -51,7 +51,7 @@ export function updateTodo(
 }
 
 export function deleteTodo(
-    userId: number,
+    userId: string,
     todoId: string,
 ): void {
     const todos = getTodos(userId)
